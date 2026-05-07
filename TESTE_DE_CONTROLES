@@ -1,0 +1,111 @@
+# Definições de Hardware
+.equ LED_BASE,   0xf0000000
+.equ LED_WIDTH,  10
+.equ LED_HEIGHT, 20
+.equ DPAD_UP,    0xf0000320
+.equ DPAD_DOWN,  0xf0000324
+.equ DPAD_LEFT,  0xf0000328
+.equ DPAD_RIGHT, 0xf000032c
+
+.text
+main:
+    # Inicializa posição central (x=5, y=10)
+    li s0, 5        # s0 = X atual
+    li s1, 10       # s1 = Y atual
+    li s2, 0xFFFFFF # s2 = Cor Branca (RGB)
+    
+    # Desenha o ponto inicial
+    jal ra, draw_pixel
+
+loop:
+    # Checar UP
+    li t0, DPAD_UP
+    lw t1, 0(t0)
+    bne t1, zero, move_up
+    
+    # Checar DOWN
+    li t0, DPAD_DOWN
+    lw t1, 0(t0)
+    bne t1, zero, move_down
+    
+    # Checar LEFT
+    li t0, DPAD_LEFT
+    lw t1, 0(t0)
+    bne t1, zero, move_left
+    
+    # Checar RIGHT
+    li t0, DPAD_RIGHT
+    lw t1, 0(t0)
+    bne t1, zero, move_right
+
+    j loop
+
+move_up:
+    beq s1, zero, loop    # Fronteira superior
+    jal ra, clear_pixel   # Apaga atual
+    addi s1, s1, -1       # Decrementa Y
+    jal ra, draw_pixel    # Desenha novo
+    j debounce
+
+move_down:
+    li t2, 19
+    beq s1, t2, loop      # Fronteira inferior
+    jal ra, clear_pixel
+    addi s1, s1, 1        # Incrementa Y
+    jal ra, draw_pixel
+    j debounce
+
+move_left:
+    beq s0, zero, loop    # Fronteira esquerda
+    jal ra, clear_pixel
+    addi s0, s0, -1       # Decrementa X
+    jal ra, draw_pixel
+    j debounce
+
+move_right:
+    li t2, 9
+    beq s0, t2, loop      # Fronteira direita
+    jal ra, clear_pixel
+    addi s0, s0, 1        # Incrementa X
+    jal ra, draw_pixel
+    j debounce
+
+# --- Funções Auxiliares ---
+
+draw_pixel:
+    # Endereço = LED_BASE + (y * WIDTH + x) * 4
+    li t0, LED_WIDTH
+    mul t1, s1, t0        # y * width
+    add t1, t1, s0        # + x
+    slli t1, t1, 2        # * 4 (word alignment)
+    li t2, LED_BASE
+    add t2, t2, t1        # Endereço final
+    sw s2, 0(t2)          # Escreve a cor
+    jr ra
+
+clear_pixel:
+    # Mesmo cálculo, mas escreve 0 (preto)
+    li t0, LED_WIDTH
+    mul t1, s1, t0
+    add t1, t1, s0
+    slli t1, t1, 2
+    li t2, LED_BASE
+    add t2, t2, t1
+    sw zero, 0(t2)
+    jr ra
+
+debounce:
+    # Espera o botão ser solto para não disparar várias vezes
+    li t0, DPAD_UP
+    lw t1, 0(t0)
+    bne t1, zero, debounce
+    li t0, DPAD_DOWN
+    lw t1, 0(t0)
+    bne t1, zero, debounce
+    li t0, DPAD_LEFT
+    lw t1, 0(t0)
+    bne t1, zero, debounce
+    li t0, DPAD_RIGHT
+    lw t1, 0(t0)
+    bne t1, zero, debounce
+    j loop
