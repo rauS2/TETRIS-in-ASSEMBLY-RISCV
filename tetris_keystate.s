@@ -29,7 +29,7 @@
 
 # Delay entre frames (ajuste conforme necessário)
 # Valor maior = movimento mais lento
-.equ DELAY_TICKS, 50000
+.equ DELAY_TICKS, 2500
 
 .text
 .globl main
