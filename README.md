@@ -42,7 +42,7 @@ As instruções de jogabilidade também estão presentes no início do código n
 
 O funcionamento interno do jogo baseia-se em um laço de repetição contínuo (*Game Loop*) que faz a escuta (*polling*) do teclado e calcula a física em sincronia com a renderização da tela.
 
-![Fluxograma do Tetris](Auxiliares/Funcionamento.png)
+![Fluxograma do Tetris](Auxiliares/funcionamento.png)
 
 ---
 
