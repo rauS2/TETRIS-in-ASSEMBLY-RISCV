@@ -10,7 +10,7 @@ Este projeto roda em uma versão customizada do simulador de arquitetura de comp
 
 * **`RIPES-km`**: Pasta contendo a versão modificada do simulador Ripes com suporte aprimorado para teclado.
 * **`TETORIS_FINAL.s`**: O código-fonte completo do jogo em Assembly RISC-V.
-* **`Auxiliares/Funcionamento.png`**: Diagrama de fluxo do sistema.
+* **`Auxiliares/diagrama_tetris.png`**: Diagrama de fluxo do sistema.
 * **`README.md`**: Este arquivo de documentação.
 
 ---
